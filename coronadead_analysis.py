@@ -55,6 +55,7 @@ if __name__ == "__main__":
     #STREAMLIT
     corona_dead_data_by_date = prepare_data()
 
+    st.sidebar.write(f"Set the desired number of age segments, then set the segment delimiters!")
 
     max_age = int(np.max(corona_dead_data_by_date["Kor"]))
 
@@ -76,7 +77,7 @@ if __name__ == "__main__":
 
         is_valid_age_groups = list(sorted(age_segments)) == list(age_segments)
         if is_valid_age_groups:
-
+            st.sidebar.write(f"Set the days in the moving average!")
             rolling_days = st.sidebar.slider(
                 'Days in the moving average',
                 min_value=1, max_value=31,
