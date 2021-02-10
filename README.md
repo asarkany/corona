@@ -18,3 +18,4 @@ The main assumption when creating these plots is that the order of the deceased 
 1. For plotting I suggest using altair directly, instead letting streamlit to it for you
 1. Altair is not easy to use but I could do exactly what I wanted in a couple of hours. It's expressiveness is massive, reminds me of ggplot2. 
    This project will be a starting point whenever I'd work with altair again.
+1. Sharing and github connection is very convenient.
