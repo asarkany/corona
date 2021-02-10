@@ -54,16 +54,7 @@ def prepare_data():
 if __name__ == "__main__":
     #STREAMLIT
     corona_dead_data_by_date = prepare_data()
-    if st.checkbox('Show dataframe'):
-        corona_dead_data_by_date
 
-    #hist_values = np.histogram(corona_dead_data_by_date["Kor"], bins=10)
-
-    if st.checkbox('Show age histogram'):
-        fig = plt.figure()
-        plt.hist(corona_dead_data_by_date["Kor"], bins=30)
-        st.write(fig)
-        plt.close(fig)
 
     max_age = int(np.max(corona_dead_data_by_date["Kor"]))
 
@@ -87,9 +78,10 @@ if __name__ == "__main__":
         if is_valid_age_groups:
 
             rolling_days = st.sidebar.slider(
-                'Days in the rolling count',
+                'Days in the moving average',
                 min_value=1, max_value=31,
                 value=7)
+            st.write(f"Moving average of coronavirus deaths in Hungary ({rolling_days} days)")
             number_of_age_segments = 3
             age_segments = [0] + age_segments + [max_age]
             rolling_counts = []
@@ -107,6 +99,8 @@ if __name__ == "__main__":
 
             y1 = "value"
             y2 = alt.Y("value", stack="normalize", axis=alt.Axis(format='%'))
+
+            st.write(f"Coronavirus deaths in Hungary summed for every {rolling_days} days")
 
             for y in [y1,y2]:
                 chart = alt.Chart(rolling_cumsum[::rolling_days].reset_index().melt(id_vars="Datum").fillna(0)).mark_bar(
@@ -143,7 +137,16 @@ if __name__ == "__main__":
         else:
             st.write("Invalid age groups")
 
+    if st.checkbox('Show dataframe'):
+        corona_dead_data_by_date
 
+    #hist_values = np.histogram(corona_dead_data_by_date["Kor"], bins=10)
+
+    if st.checkbox('Show age histogram'):
+        fig = plt.figure()
+        plt.hist(corona_dead_data_by_date["Kor"], bins=30)
+        st.write(fig)
+        plt.close(fig)
     pass
 
 
