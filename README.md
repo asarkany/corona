@@ -6,6 +6,8 @@
    1. it contains all individuals who have died. In this visualization I've 
 1. wikidata.csv was manually created using the data from the chart on the right on this wikipedia page: https://en.wikipedia.org/wiki/COVID-19_pandemic_in_Hungary#Infections 
     1. the data was directly copied from here: https://en.wikipedia.org/w/index.php?title=Template:COVID-19_pandemic_data/Hungary_medical_cases_chart&action=edit
+   
+Data needs to be updated manually!!! Last update 2021.02.10.
     
 ## Data processing
 The main assumption when creating these plots is that the order of the deceased can be taken as granted and it can be assigned to the daily death data.
