@@ -70,7 +70,7 @@ if __name__ == "__main__":
         for age_segment_counter in range(number_of_age_segments-1):
 
             option = st.sidebar.selectbox(
-                f'Age segment {age_segment_counter}',
+                f'Age delimiter {age_segment_counter}',
                 list(range(5,max_age,5)),
                 index=int((len(list(range(1,max_age,5)))//number_of_age_segments)*(age_segment_counter+1)))
             age_segments.append(option)
