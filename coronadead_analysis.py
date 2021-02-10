@@ -29,7 +29,7 @@ def prepare_data():
 
     #betegsegek_indicators = corona_dead_data["Betegsegek"].str.get_dummies()(",")
 
-    daily_deaths = json.load(open("daily_deaths.json","r"))
+    #daily_deaths = json.load(open("daily_deaths.json","r"))
 
     wikidata = pd.read_csv("wikidata.csv")
     wikidata = wikidata[["date","death_all"]]
