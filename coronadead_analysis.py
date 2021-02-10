@@ -55,13 +55,13 @@ if __name__ == "__main__":
     #STREAMLIT
     corona_dead_data_by_date = prepare_data()
 
-    st.sidebar.write(f"Set the days in the moving average!")
+    st.sidebar.markdown(f"**Set the days in the moving average!**")
     rolling_days = st.sidebar.slider(
         'Days in the moving average',
         min_value=1, max_value=31,
         value=7)
 
-    st.sidebar.write(f"Set the desired number of age segments, then set the segment delimiters!")
+    st.sidebar.markdown(f"**Set the desired number of age segments, then set the segment delimiters!**")
 
     number_of_age_segments = st.sidebar.selectbox(
         'Number of age segments',
@@ -84,7 +84,7 @@ if __name__ == "__main__":
         is_valid_age_groups = list(sorted(age_segments)) == list(age_segments)
         if is_valid_age_groups:
 
-            st.write(f"Moving average of coronavirus deaths in Hungary ({rolling_days} days)")
+            st.markdown(f"**Moving average of coronavirus deaths in Hungary ({rolling_days} days)**")
             number_of_age_segments = 3
             age_segments = [0] + age_segments + [max_age]
             rolling_counts = []
@@ -100,12 +100,17 @@ if __name__ == "__main__":
             rolling_cumsum = pd.concat(rolling_counts,axis=1).cumsum(axis=1)
             st.line_chart(rolling_cumsum, width=1000, height=500, use_container_width=False)
 
-            y1 = "value"
-            y2 = alt.Y("value", stack="normalize", axis=alt.Axis(format='%'))
+            y1 = alt.Y("value", title="Count")
+            y2 = alt.Y("value", title="Percentage", stack="normalize", axis=alt.Axis(format='%'))
 
-            st.write(f"Coronavirus deaths in Hungary summed for every {rolling_days} days")
 
-            for y in [y1,y2]:
+
+            for yi, y in enumerate([y1,y2]):
+                if yi == 0:
+                    st.markdown(f"**Coronavirus deaths in Hungary summed for every {rolling_days} days**")
+                elif yi == 1:
+                    st.markdown(f"**Coronavirus death ratio between age groups in Hungary summed for every {rolling_days} days**")
+
                 chart = alt.Chart(rolling_cumsum[::rolling_days].reset_index().melt(id_vars="Datum").fillna(0)).mark_bar(
                     size=10).transform_joinaggregate(
                         total="sum(value)",
@@ -113,7 +118,7 @@ if __name__ == "__main__":
                         frac=alt.datum.value / alt.datum.total).encode(
                     x="Datum",
                     y=y,
-                    color="variable",
+                    color=alt.Color("variable",title="Age group"),
                     order=alt.Order(
                         # Sort the segments of the bars by this field
                         'variable',
