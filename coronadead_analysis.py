@@ -55,14 +55,20 @@ if __name__ == "__main__":
     #STREAMLIT
     corona_dead_data_by_date = prepare_data()
 
-    st.sidebar.write(f"Set the desired number of age segments, then set the segment delimiters!")
+    st.sidebar.write(f"Set the days in the moving average!")
+    rolling_days = st.sidebar.slider(
+        'Days in the moving average',
+        min_value=1, max_value=31,
+        value=7)
 
-    max_age = int(np.max(corona_dead_data_by_date["Kor"]))
+    st.sidebar.write(f"Set the desired number of age segments, then set the segment delimiters!")
 
     number_of_age_segments = st.sidebar.selectbox(
         'Number of age segments',
         list(range(2,11)),
         index=1)
+
+    max_age = int(np.max(corona_dead_data_by_date["Kor"]))
 
     if number_of_age_segments != "<select>":
         age_segments = []
@@ -70,18 +76,14 @@ if __name__ == "__main__":
         for age_segment_counter in range(number_of_age_segments-1):
 
             option = st.sidebar.selectbox(
-                f'Age delimiter {age_segment_counter}',
+                f'Age delimiter {age_segment_counter + 1}',
                 list(range(5,max_age,5)),
                 index=int((len(list(range(1,max_age,5)))//number_of_age_segments)*(age_segment_counter+1)))
             age_segments.append(option)
 
         is_valid_age_groups = list(sorted(age_segments)) == list(age_segments)
         if is_valid_age_groups:
-            st.sidebar.write(f"Set the days in the moving average!")
-            rolling_days = st.sidebar.slider(
-                'Days in the moving average',
-                min_value=1, max_value=31,
-                value=7)
+
             st.write(f"Moving average of coronavirus deaths in Hungary ({rolling_days} days)")
             number_of_age_segments = 3
             age_segments = [0] + age_segments + [max_age]
