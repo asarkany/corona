@@ -66,7 +66,7 @@ if __name__ == "__main__":
     number_of_age_segments = st.sidebar.selectbox(
         'Number of age segments',
         list(range(2,11)),
-        index=5)
+        index=3)
 
     max_age = int(np.max(corona_dead_data_by_date["Kor"]))
 
