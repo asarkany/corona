@@ -54,6 +54,14 @@ def prepare_data():
 if __name__ == "__main__":
     #STREAMLIT
     corona_dead_data_by_date = prepare_data()
+    st.markdown("""
+        <style>
+        .css-1v3fvcr {
+            align-items: flex-start;
+            padding-left: 50px;
+        }
+        </style>
+        """, unsafe_allow_html = True)
 
     st.sidebar.markdown(f"**Set the days in the moving average!**")
     rolling_days = st.sidebar.slider(
@@ -82,10 +90,15 @@ if __name__ == "__main__":
             age_segments.append(option)
 
         is_valid_age_groups = list(sorted(age_segments)) == list(age_segments)
-        colormaps = ["spectral","blues","greens", "reds", "ylorbr","plasma", "viridis"]
+
+        st.sidebar.markdown(f"**Chart formatting options**")
+
+        colormaps = ["spectral","darkred","darkmulti","lightmulti","goldgreen","plasma","viridis","blues","greens", "reds"]
 
         colormap = st.sidebar.selectbox("Colormap", colormaps)
         reverse_colormap = st.sidebar.checkbox(label="Reverse colors")
+        chart_width = st.sidebar.slider("Chart widths", min_value=300, max_value=2000, value=1000)
+        chart_height = st.sidebar.slider("Chart heights", min_value=100, max_value=1000, value=250)
 
         if is_valid_age_groups:
 
@@ -117,8 +130,8 @@ if __name__ == "__main__":
 
                 ).configure_view(
                     strokeWidth=1.0,
-                    height=500,
-                    width=1000
+                    height=chart_height,
+                    width=chart_width
                 ).interactive()
 
             st.altair_chart(chart)
@@ -129,7 +142,7 @@ if __name__ == "__main__":
 
             for yi, y in enumerate([y1,y2]):
                 if yi == 0:
-                    st.markdown(f"**Coronavirus deaths in Hungary summed for every {rolling_days} days**")
+                    st.markdown(f"**Coronavirus deaths in Hungary, stacked age groups, summed for every {rolling_days} days**")
                 elif yi == 1:
                     st.markdown(f"**Coronavirus death ratio between age groups in Hungary summed for every {rolling_days} days**")
 
@@ -152,8 +165,8 @@ if __name__ == "__main__":
 
                 ).configure_view(
                     strokeWidth=1.0,
-                    height=500,
-                    width=1000
+                    height=chart_height,
+                    width=chart_width
                 ).interactive()
 
                 st.altair_chart(chart)
