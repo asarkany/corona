@@ -66,7 +66,7 @@ if __name__ == "__main__":
     number_of_age_segments = st.sidebar.selectbox(
         'Number of age segments',
         list(range(2,11)),
-        index=1)
+        index=5)
 
     max_age = int(np.max(corona_dead_data_by_date["Kor"]))
 
@@ -82,10 +82,14 @@ if __name__ == "__main__":
             age_segments.append(option)
 
         is_valid_age_groups = list(sorted(age_segments)) == list(age_segments)
+        colormaps = ["spectral","blues","greens", "reds", "ylorbr","plasma", "viridis"]
+
+        colormap = st.sidebar.selectbox("Colormap", colormaps)
+        reverse_colormap = st.sidebar.checkbox(label="Reverse colors")
+
         if is_valid_age_groups:
 
             st.markdown(f"**Moving average of coronavirus deaths in Hungary ({rolling_days} days)**")
-            number_of_age_segments = 3
             age_segments = [0] + age_segments + [max_age]
             rolling_counts = []
             for lower_age,upper_age in zip(age_segments[:-1],age_segments[1:]):
@@ -98,11 +102,29 @@ if __name__ == "__main__":
                 rolling_counts.append(rolling_count)
 
             rolling_cumsum = pd.concat(rolling_counts,axis=1).cumsum(axis=1)
-            st.line_chart(rolling_cumsum, width=1000, height=500, use_container_width=False)
+            #st.line_chart(rolling_cumsum, width=1000, height=500, use_container_width=False)
+            chart = alt.Chart(rolling_cumsum.reset_index().melt(id_vars="Datum")).mark_line(size=5).encode(
+                    x="Datum",
+                    y=alt.Y("value", title="Count"),
+                    color=alt.Color("variable",title="Age group",scale=alt.Scale(scheme=colormap, reverse=reverse_colormap)),
+                    order=alt.Order(
+                        # Sort the segments of the bars by this field
+                        'variable',
+                        sort='ascending'),
+                    tooltip=[alt.Tooltip('Datum:T', title="Date"),
+                             alt.Tooltip('value:Q', title="Death"),
+                             alt.Tooltip('variable:N', title="Age group")],
+
+                ).configure_view(
+                    strokeWidth=1.0,
+                    height=500,
+                    width=1000
+                ).interactive()
+
+            st.altair_chart(chart)
 
             y1 = alt.Y("value", title="Count")
             y2 = alt.Y("value", title="Percentage", stack="normalize", axis=alt.Axis(format='%'))
-
 
 
             for yi, y in enumerate([y1,y2]):
@@ -118,7 +140,7 @@ if __name__ == "__main__":
                         frac=alt.datum.value / alt.datum.total).encode(
                     x="Datum",
                     y=y,
-                    color=alt.Color("variable",title="Age group"),
+                    color=alt.Color("variable",title="Age group",scale=alt.Scale(scheme=colormap, reverse=reverse_colormap)),
                     order=alt.Order(
                         # Sort the segments of the bars by this field
                         'variable',
@@ -147,6 +169,9 @@ if __name__ == "__main__":
 
     if st.checkbox('Show dataframe'):
         corona_dead_data_by_date
+
+    if st.checkbox('Show rolling dataframe'):
+        rolling_cumsum
 
     #hist_values = np.histogram(corona_dead_data_by_date["Kor"], bins=10)
 
