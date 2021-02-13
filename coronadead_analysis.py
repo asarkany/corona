@@ -100,6 +100,9 @@ if __name__ == "__main__":
         chart_width = st.sidebar.slider("Chart widths", min_value=300, max_value=2000, value=1000)
         chart_height = st.sidebar.slider("Chart heights", min_value=100, max_value=1000, value=250)
 
+        st.sidebar.write("© András Sárkány, 2021")
+        st.sidebar.markdown("[andris.sarkany@gmail.com](mailto:andris.sarkany@gmail.com)")
+
         if is_valid_age_groups:
 
             st.markdown(f"**Moving average of coronavirus deaths in Hungary ({rolling_days} days)**")

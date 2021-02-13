@@ -20,6 +20,12 @@ The main assumption when creating these plots is that the order of the deceased 
    This project will be a starting point whenever I'd work with altair again.
 1. Sharing and github connection is very convenient.
 
+## Copyright
+2021, András Sárkány
+
+[andris.sarkany@gmail.com](mailto:andris.sarkany@gmail.com)
+
+
 ## License
 
-GPLv3, see [LICENSE](LICENSE) file.
+[CC-BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/legalcode), see [LICENSE](LICENSE) file.
