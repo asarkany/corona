@@ -7,9 +7,16 @@ import matplotlib.pyplot as plt
 
 import altair as alt
 from altair import Chart, Order
+from pandas import Index, Int64Index
 
-@st.cache
+from scrape_data import scrape_wikipedia, scrape_govhu
+
+
+@st.cache(ttl=86400) # rerun once every day
 def prepare_data():
+    scrape_wikipedia()
+    scrape_govhu()
+
     corona_dead_raw_data = []
     with open('corona-hun-dead.csv', 'r') as f:
         reader = DictReader(f)
@@ -27,6 +34,11 @@ def prepare_data():
 
     corona_dead_data["Kor"] = corona_dead_data["Kor"].astype(int)
 
+    fixed_index = list(corona_dead_data.index)
+    fixed_index[1762] = 1763 #this is the 2nd (erronous) 1762 id
+
+    corona_dead_data.index = Int64Index(data=fixed_index, name="Sorszam")
+
     #betegsegek_indicators = corona_dead_data["Betegsegek"].str.get_dummies()(",")
 
     #daily_deaths = json.load(open("daily_deaths.json","r"))
@@ -43,7 +55,10 @@ def prepare_data():
         if wiki_row["new_deaths"] > 0:
             for daily_death_counter in range(int(wiki_row["new_deaths"])):
                 full_death_counter += 1
-                corona_dead_data.loc[full_death_counter,"Datum"] = date
+                try:
+                    corona_dead_data.loc[full_death_counter,"Datum"] = date
+                except:
+                    pass
 
     corona_dead_data["Datum"] = pd.to_datetime(corona_dead_data["Datum"])
 
