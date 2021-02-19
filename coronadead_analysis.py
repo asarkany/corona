@@ -55,10 +55,7 @@ def prepare_data():
         if wiki_row["new_deaths"] > 0:
             for daily_death_counter in range(int(wiki_row["new_deaths"])):
                 full_death_counter += 1
-                try:
-                    corona_dead_data.loc[full_death_counter,"Datum"] = date
-                except:
-                    pass
+                corona_dead_data.loc[full_death_counter,"Datum"] = date
 
     corona_dead_data["Datum"] = pd.to_datetime(corona_dead_data["Datum"])
 
@@ -89,7 +86,7 @@ if __name__ == "__main__":
     number_of_age_segments = st.sidebar.selectbox(
         'Number of age segments',
         list(range(2,11)),
-        index=3)
+        index=1)
 
     max_age = int(np.max(corona_dead_data_by_date["Kor"]))
 
