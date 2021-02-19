@@ -59,12 +59,13 @@ def scrape_wikipedia():
 
 def scrape_govhu():
     print("Scraping koronavirus.gov.hu...")
-    print("Page: ", end="", flush=True)
+    print("Page:")
     raw_data = []
     no_more_page = False
     page = 0
     while not no_more_page:
-        print(page, end=", ", flush=True)
+        if page % 10 == 0:
+            print(f"{page}...")
         wait()
         url = f"https://koronavirus.gov.hu/elhunytak?page={page}" if page > 0 else "https://koronavirus.gov.hu/elhunytak"
         page_source = requests.get(url).content
@@ -81,7 +82,7 @@ def scrape_govhu():
             page += 1
         except NoneExists:
             no_more_page = True
-    print(".")
+
 
     with open('corona-hun-dead.csv', 'w') as f:  # You will need 'wb' mode in Python 2.x
         w = csv.DictWriter(f, raw_data[0].keys())
