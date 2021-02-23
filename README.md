@@ -2,12 +2,11 @@
 
 ## Data source
 
-1. corona-hun-dead.csv was scraped from https://koronavirus.gov.hu/elhunytak
-   1. it contains all individuals who have died. In this visualization I've 
-1. wikidata.csv was manually created using the data from the chart on the right on this wikipedia page: https://en.wikipedia.org/wiki/COVID-19_pandemic_in_Hungary#Infections 
-    1. the data was directly copied from here: https://en.wikipedia.org/w/index.php?title=Template:COVID-19_pandemic_data/Hungary_medical_cases_chart&action=edit
+Data updates automatically, set to a period of 1 day.
+1. Deceased people demographics are scraped from https://koronavirus.gov.hu/elhunytak
+   1. it contains all individuals who have died.
+1. Daily counts are scraped from: https://en.wikipedia.org/wiki/COVID-19_pandemic_in_Hungary#Infections 
    
-Data needs to be updated manually!!! Last update 2021.02.10.
     
 ## Data processing
 The main assumption when creating these plots is that the order of the deceased can be taken as granted and it can be assigned to the daily death data.
@@ -23,7 +22,7 @@ The main assumption when creating these plots is that the order of the deceased 
 ## Copyright
 2021, András Sárkány
 
-[andris.sarkany@gmail.com](mailto:andris.sarkany@gmail.com)
+[sarkany.andris@gmail.com](mailto:sarkany.andris@gmail.com)
 
 
 ## License

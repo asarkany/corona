@@ -115,7 +115,8 @@ if __name__ == "__main__":
         chart_height = st.sidebar.slider("Chart heights", min_value=100, max_value=1000, value=250)
 
         st.sidebar.write("© András Sárkány, 2021")
-        st.sidebar.markdown("[andris.sarkany@gmail.com](mailto:andris.sarkany@gmail.com)")
+        st.sidebar.markdown("[sarkany.andris@gmail.com](mailto:sarkany.andris@gmail.com)")
+        st.sidebar.markdown("[Source code](https://github.com/asarkany/corona)")
 
         if is_valid_age_groups:
 
