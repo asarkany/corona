@@ -25,7 +25,9 @@ def prepare_data():
 
     corona_dead_data = pd.DataFrame.from_dict(corona_dead_raw_data)
     corona_dead_data.columns = ["Sorszam", "Nem", "Kor", "Betegsegek"]
-
+    if (corona_dead_data["Sorszam"] == "14").sum() > 1:
+        # fix issues with erronous multiple 14 indexes
+        corona_dead_data = pd.concat([corona_dead_data[:-14299-97+1],corona_dead_data[-14299:]])
     corona_dead_data["Sorszam"] = corona_dead_data["Sorszam"].astype(int)
     corona_dead_data.set_index("Sorszam", inplace=True)
     corona_dead_data.sort_index(inplace=True)
