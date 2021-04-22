@@ -167,7 +167,7 @@ if __name__ == "__main__":
 
             st.altair_chart(chart)
 
-            y1 = alt.Y("count", title="Count")
+            y1 = alt.Y("count", title="Stacked count")
             y2 = alt.Y("count", title="Percentage", stack="normalize", axis=alt.Axis(format='%'))
 
             period_data = melt_agegroup_data(rolling_table[::rolling_days])
