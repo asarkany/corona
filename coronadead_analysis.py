@@ -65,6 +65,17 @@ def prepare_data():
 
     return corona_dead_data_by_date
 
+
+def melt_agegroup_data(table):
+    cumsum_table = table.cumsum(axis=1)
+
+    melted_table = table.reset_index().melt(id_vars="Datum", var_name="agegroup", value_name="count")
+    melted_cumsum_table = cumsum_table.reset_index().melt(id_vars="Datum", var_name="agegroup", value_name="cumsum")
+    merged_table = pd.merge(melted_table, melted_cumsum_table, how='left',
+             left_on=['Datum', 'agegroup'], right_on=['Datum', 'agegroup'])
+
+    return merged_table
+
 if __name__ == "__main__":
     #STREAMLIT
     corona_dead_data_by_date = prepare_data()
@@ -132,19 +143,21 @@ if __name__ == "__main__":
                 rolling_count.name = f"{lower_age} - {upper_age}"
                 rolling_counts.append(rolling_count)
 
-            rolling_cumsum = pd.concat(rolling_counts,axis=1).cumsum(axis=1)
+            rolling_table = pd.concat(rolling_counts,axis=1)
+
+            melted_data = melt_agegroup_data(rolling_table)
             #st.line_chart(rolling_cumsum, width=1000, height=500, use_container_width=False)
-            chart = alt.Chart(rolling_cumsum.reset_index().melt(id_vars="Datum")).mark_line(size=5).encode(
+            chart = alt.Chart(melted_data).mark_line(size=5).encode(
                     x="Datum",
-                    y=alt.Y("value", title="Count"),
-                    color=alt.Color("variable",title="Age group",scale=alt.Scale(scheme=colormap, reverse=reverse_colormap)),
+                    y=alt.Y("cumsum", title="Cumulated count"),
+                    color=alt.Color("agegroup",title="Age group",scale=alt.Scale(scheme=colormap, reverse=reverse_colormap)),
                     order=alt.Order(
                         # Sort the segments of the bars by this field
-                        'variable',
+                        'agegroup',
                         sort='ascending'),
                     tooltip=[alt.Tooltip('Datum:T', title="Date"),
-                             alt.Tooltip('value:Q', title="Death"),
-                             alt.Tooltip('variable:N', title="Age group")],
+                             alt.Tooltip('count:Q', title="Death"),
+                             alt.Tooltip('agegroup:N', title="Age group")],
 
                 ).configure_view(
                     strokeWidth=1.0,
@@ -154,9 +167,10 @@ if __name__ == "__main__":
 
             st.altair_chart(chart)
 
-            y1 = alt.Y("value", title="Count")
-            y2 = alt.Y("value", title="Percentage", stack="normalize", axis=alt.Axis(format='%'))
+            y1 = alt.Y("count", title="Count")
+            y2 = alt.Y("count", title="Percentage", stack="normalize", axis=alt.Axis(format='%'))
 
+            period_data = melt_agegroup_data(rolling_table[::rolling_days])
 
             for yi, y in enumerate([y1,y2]):
                 if yi == 0:
@@ -164,21 +178,21 @@ if __name__ == "__main__":
                 elif yi == 1:
                     st.markdown(f"**Coronavirus death ratio between age groups in Hungary summed for every {rolling_days} days**")
 
-                chart = alt.Chart(rolling_cumsum[::rolling_days].reset_index().melt(id_vars="Datum").fillna(0)).mark_bar(
+                chart = alt.Chart(period_data.fillna(0)).mark_bar(
                     size=10).transform_joinaggregate(
-                        total="sum(value)",
+                        total="sum(count)",
                         groupby=["Datum"]).transform_calculate(
-                        frac=alt.datum.value / alt.datum.total).encode(
+                        frac=alt.datum.count / alt.datum.total).encode(
                     x="Datum",
                     y=y,
-                    color=alt.Color("variable",title="Age group",scale=alt.Scale(scheme=colormap, reverse=reverse_colormap)),
+                    color=alt.Color("agegroup",title="Age group",scale=alt.Scale(scheme=colormap, reverse=reverse_colormap)),
                     order=alt.Order(
                         # Sort the segments of the bars by this field
-                        'variable',
+                        'agegroup',
                         sort='ascending'),
                     tooltip=[alt.Tooltip('Datum:T', title="Date"),
-                             alt.Tooltip('value:Q', title="Death"),
-                             alt.Tooltip('variable:N', title="Age group"),
+                             alt.Tooltip('count:Q', title="Death"),
+                             alt.Tooltip('agegroup:N', title="Age group"),
                              alt.Tooltip('frac:Q', title="Percentage", format='.0%')],
 
                 ).configure_view(
